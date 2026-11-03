@@ -42,7 +42,7 @@ export const NotFound = () => {
 
   return (
     <>
-      <PageTitle title={t`Page Not Found | Twenty`} />
+      <PageTitle title={`${t`Page Not Found`} | Всем шары CRM`} />
       <StyledBackDrop>
         <ErrorState.Root>
           <AnimatedPlaceholder type="error404" />
