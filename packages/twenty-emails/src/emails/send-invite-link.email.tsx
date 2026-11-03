@@ -1,96 +1,36 @@
-import { Trans } from '@lingui/react';
-import { Img } from 'react-email';
-import { canvasTheme } from 'src/common-style';
-
-import { BaseEmail } from 'src/components/BaseEmail';
-import { CallToAction } from 'src/components/CallToAction';
-import { HighlightedContainer } from 'src/components/HighlightedContainer';
-import { HighlightedText } from 'src/components/HighlightedText';
-import { Link } from 'src/components/Link';
-import { MainText } from 'src/components/MainText';
-import { Title } from 'src/components/Title';
-import { WhatIsTwenty } from 'src/components/WhatIsTwenty';
-import { capitalize } from 'src/utils/capitalize';
-import { createI18nInstance } from 'src/utils/i18n.utils';
+import { Body, Button, Container, Head, Heading, Html, Text } from 'react-email';
 import { type APP_LOCALES } from 'twenty-shared/translations';
-import { getImageAbsoluteURI } from 'twenty-shared/utils';
 
 type SendInviteLinkEmailProps = {
   link: string;
   workspace: { name: string | undefined; logo: string | undefined };
-  sender: {
-    email: string;
-    firstName: string;
-    lastName: string;
-  };
+  sender: { email: string; firstName: string; lastName: string };
   serverUrl: string;
   locale: keyof typeof APP_LOCALES;
 };
 
-export const SendInviteLinkEmail = ({
-  link,
-  workspace,
-  sender,
-  serverUrl,
-  locale,
-}: SendInviteLinkEmailProps) => {
-  const i18n = createI18nInstance(locale);
-  const workspaceLogo = workspace.logo
-    ? getImageAbsoluteURI({ imageUrl: workspace.logo, baseUrl: serverUrl })
-    : null;
-
-  const senderName = capitalize(sender.firstName);
-  const senderEmail = sender.email;
-  const workspaceName = workspace.name;
-
-  return (
-    <BaseEmail width={333} locale={locale}>
-      <Title value={i18n._('Join your team on Twenty')} />
-      <MainText>
-        <Trans
-          id="{senderName} (<0>{senderEmail}</0>) has invited you to join a workspace called <1>{workspaceName}</1>."
-          values={{ senderName, senderEmail, workspaceName }}
-          components={{
-            0: (
-              <Link
-                href={`mailto:${senderEmail}`}
-                value={senderEmail}
-                color={canvasTheme.font.colors.blue}
-              />
-            ),
-            1: <b />,
-          }}
-        />
-        <br />
-      </MainText>
-      <HighlightedContainer>
-        {workspaceLogo ? (
-          <Img
-            src={workspaceLogo}
-            width={40}
-            height={40}
-            alt={i18n._('Workspace logo')}
-          />
-        ) : (
-          <></>
-        )}
-        {workspace.name ? <HighlightedText value={workspace.name} /> : <></>}
-        <CallToAction href={link} value={i18n._('Accept invite')} />
-      </HighlightedContainer>
-      <WhatIsTwenty i18n={i18n} />
-    </BaseEmail>
-  );
-};
+export const SendInviteLinkEmail = ({ link, workspace, locale }: SendInviteLinkEmailProps) => (
+  <Html lang={locale}>
+    <Head />
+    <Body style={{ margin: 0, padding: '32px 16px', backgroundColor: '#f6f5ff', fontFamily: 'Arial, sans-serif', color: '#262334' }}>
+      <Container style={{ maxWidth: '560px', margin: '0 auto', padding: '32px', backgroundColor: '#ffffff', borderRadius: '16px' }}>
+        <Text style={{ fontWeight: 'bold', color: '#7266F3', fontSize: '18px' }}>Всем шары</Text>
+        <Heading as="h1" style={{ fontSize: '24px', lineHeight: '1.3' }}>Приглашение в команду «Всем шары»</Heading>
+        <Text>Вас приглашают в рабочее пространство «{workspace.name ?? 'Всем шары'}» — CRM для аэродизайнеров.</Text>
+        <Text>Войдите, чтобы работать с заказами, клиентами и сообщениями.</Text>
+        <Button href={link} style={{ padding: '13px 22px', backgroundColor: '#7266F3', color: '#ffffff', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>Принять приглашение</Button>
+        <Text style={{ fontSize: '12px', color: '#777777' }}>Если вы не ожидали это приглашение, просто проигнорируйте письмо.</Text>
+      </Container>
+    </Body>
+  </Html>
+);
 
 SendInviteLinkEmail.PreviewProps = {
-  link: 'https://app.twenty.com/invite/123',
-  workspace: {
-    name: 'Acme Inc.',
-    logo: 'https://fakeimg.pl/200x200/?text=ACME&font=lobster',
-  },
-  sender: { email: 'john.doe@example.com', firstName: 'John', lastName: 'Doe' },
-  serverUrl: 'https://app.twenty.com',
-  locale: 'en',
+  link: 'https://crm.vsemshary.ru/invite/preview',
+  workspace: { name: 'Всем шары', logo: undefined },
+  sender: { email: 'noreply@vsemshary.ru', firstName: 'Антон', lastName: '' },
+  serverUrl: 'https://crm.vsemshary.ru',
+  locale: 'ru-RU',
 } as SendInviteLinkEmailProps;
 
 export default SendInviteLinkEmail;
